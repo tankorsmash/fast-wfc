@@ -78,7 +78,7 @@ void read_overlapping_instance(rapidxml::xml_node<> *node) {
         cout << name << " finished!" << endl;
         break;
       } else {
-        cout << "failed!" << endl;
+        cout << "ERROR: '" << name << "' failed!" << endl;
       }
     }
   }
