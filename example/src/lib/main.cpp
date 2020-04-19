@@ -61,7 +61,7 @@ void read_overlapping_instance(rapidxml::xml_node<> *node) {
   // Stop hardcoding samples
   const std::string image_path = "samples/" + name + ".png";
   Array2D<Color> m = read_image(image_path);
-  Array2D<Color> NNN = Array2D<Color>{0, 0};
+  static Array2D<Color> NNN = Array2D<Color>{0, 0};
   if (m == NNN) {
     throw "Error while loading " + image_path;
   }
@@ -72,7 +72,7 @@ void read_overlapping_instance(rapidxml::xml_node<> *node) {
       int seed = get_random_seed();
       OverlappingWFC<Color> wfc(m, options, seed);
       Array2D<Color> success = wfc.run();
-      Array2D<Color> NULL_COLOR_ARR = Array2D<Color>{0, 0};
+      static Array2D<Color> NULL_COLOR_ARR = Array2D<Color>{0, 0};
       if (success != NULL_COLOR_ARR) {
         write_image_png("results/" + name + to_string(i) + ".png", success);
         cout << name << " finished!" << endl;
@@ -158,13 +158,14 @@ unordered_map<string, Tile<Color>> read_tiles(xml_node<> *root_node,
     const std::string image_path = current_dir + "/" + name + ".png";
     Array2D<Color> image = read_image(image_path);
 
-    if (image == Array2D<Color>{0, 0}) {
+    static auto NNN = Array2D<Color>{0, 0};
+    if (image == NNN) {
       vector<Array2D<Color>> images;
       for (unsigned i = 0; i < nb_of_possible_orientations(symmetry); i++) {
         const std::string image_path =
             current_dir + "/" + name + " " + to_string(i) + ".png";
         Array2D<Color> image = read_image(image_path);
-        if (image == Array2D<Color>{0, 0}) {
+        if (image == NNN) {
           throw "Error while loading " + image_path;
         }
         if ((image.width != size) || (image.height != size)) {
@@ -276,7 +277,9 @@ void read_simpletiled_instance(xml_node<> *node,
     TilingWFC<Color> wfc(tiles, neighbors_ids, height, width, {periodic_output},
                          seed);
     Array2D<Color> success = wfc.run();
-    if (success != Array2D<Color>{0, 0}) {
+
+    static auto NNN = Array2D<Color>{0, 0};
+    if (success != NNN) {
       write_image_png("results/" + name + "_" + subset + ".png", success);
       cout << name << " finished!" << endl;
       break;
