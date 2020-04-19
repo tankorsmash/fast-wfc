@@ -121,24 +121,6 @@ public:
   }
 };
 
-//this Color override shouldn't be neccesary, but if I don't include it, the
-//compiler can't match the original operator== to it. IDK
-///**
-// * Check if two 2D arrays are equals.
-// */
-//bool operator==(const Array2D<Color> &left, const Array2D<Color>& right) {
-//    if (right.height != left.height || right.width != left.width) {
-//        return false;
-//    }
-//
-//    for (size_t i = 0; i < right.data.size(); i++) {
-//        if (left.data[i] != right.data[i]) {
-//            return false;
-//        }
-//    }
-//    return true;
-//}
-//
 /**
  * Hash function.
  */
