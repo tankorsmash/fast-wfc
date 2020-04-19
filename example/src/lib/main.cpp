@@ -329,4 +329,6 @@ int main() {
           .count();
   std::cout << "All samples done in " << elapsed_s << "s, " << elapsed_ms % 1000
             << "ms.\n";
+
+  return 0;
 }
