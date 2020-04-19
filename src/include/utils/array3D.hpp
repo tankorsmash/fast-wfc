@@ -27,7 +27,7 @@ public:
    * Build a 2D array given its height, width and depth.
    * All the arrays elements are initialized to default value.
    */
-  Array3D(size_t height, size_t width, size_t depth) noexcept
+  Array3D(size_t height, size_t width, size_t depth) 
       : height(height), width(width), depth(depth),
         data(width * height * depth) {}
 
@@ -35,7 +35,7 @@ public:
    * Build a 2D array given its height, width and depth.
    * All the arrays elements are initialized to value
    */
-  Array3D(size_t height, size_t width, size_t depth, T value) noexcept
+  Array3D(size_t height, size_t width, size_t depth, T value) 
       : height(height), width(width), depth(depth),
         data(width * height * depth, value) {}
 
@@ -44,7 +44,7 @@ public:
    * k-th depth. i must be lower than height, j lower than width, and k lower
    * than depth.
    */
-  const T &get(size_t i, size_t j, size_t k) const noexcept {
+  const T &get(size_t i, size_t j, size_t k) const  {
     assert(i < height && j < width && k < depth);
     return data[i * width * depth + j * depth + k];
   }
@@ -54,14 +54,14 @@ public:
    * depth. i must be lower than height, j lower than width, and k lower than
    * depth.
    */
-  T &get(size_t i, size_t j, size_t k) noexcept {
+  T &get(size_t i, size_t j, size_t k)  {
     return data[i * width * depth + j * depth + k];
   }
 
   /**
    * Check if two 3D arrays are equals.
    */
-  bool operator==(const Array3D &a) const noexcept {
+  bool operator==(const Array3D &a) const  {
     if (height != a.height || width != a.width || depth != a.depth) {
       return false;
     }

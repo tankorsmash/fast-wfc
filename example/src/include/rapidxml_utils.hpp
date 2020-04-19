@@ -10,7 +10,7 @@ namespace rapidxml {
  * If the attribute does not exist, then return the default value given.
  */
 std::string get_attribute(xml_node<> *node, const std::string &attribute,
-                          const std::string &default_value) noexcept {
+                          const std::string &default_value)  {
   if (node->first_attribute(attribute.c_str()) != nullptr) {
     return node->first_attribute(attribute.c_str())->value();
   } else {
@@ -23,7 +23,7 @@ std::string get_attribute(xml_node<> *node, const std::string &attribute,
  * If the attribute does not exist, this will result in undefined behavior.
  */
 std::string get_attribute(xml_node<> *node,
-                          const std::string &attribute) noexcept {
+                          const std::string &attribute)  {
   return node->first_attribute(attribute.c_str())->value();
 }
 

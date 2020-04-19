@@ -1,7 +1,7 @@
 #include "propagator.hpp"
 #include "wave.hpp"
 
-void Propagator::init_compatible() noexcept {
+void Propagator::init_compatible()  {
   std::array<int, 4> value;
   // We compute the number of pattern compatible in all directions.
   for (unsigned y = 0; y < wave_height; y++) {
@@ -18,7 +18,7 @@ void Propagator::init_compatible() noexcept {
   }
 }
 
-void Propagator::propagate(Wave &wave) noexcept {
+void Propagator::propagate(Wave &wave)  {
 
   // We propagate every element while there is element to propagate.
   while (propagating.size() != 0) {

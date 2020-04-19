@@ -1,7 +1,7 @@
 #ifndef FAST_WFC_WFC_HPP_
 #define FAST_WFC_WFC_HPP_
 
-#include <optional>
+//#include <optional>
 #include <random>
 
 #include "utils/array2D.hpp"
@@ -43,7 +43,7 @@ private:
    * contradiction). This function should be used only when all cell of the wave
    * are defined.
    */
-  Array2D<unsigned> wave_to_output() const noexcept;
+  Array2D<unsigned> wave_to_output() const ;
 
 public:
   /**
@@ -52,12 +52,13 @@ public:
   WFC(bool periodic_output, int seed, std::vector<double> patterns_frequencies,
       Propagator::PropagatorState propagator, unsigned wave_height,
       unsigned wave_width)
-    noexcept;
+    ;
 
   /**
    * Run the algorithm, and return a result if it succeeded.
    */
-  std::optional<Array2D<unsigned>> run() noexcept;
+  //std::optional<Array2D<unsigned>> run() ;
+  Array2D<unsigned> run() ;
 
   /**
    * Return value of observe.
@@ -71,17 +72,17 @@ public:
   /**
    * Define the value of the cell with lowest entropy.
    */
-  ObserveStatus observe() noexcept;
+  ObserveStatus observe() ;
 
   /**
    * Propagate the information of the wave.
    */
-  void propagate() noexcept { propagator.propagate(wave); }
+  void propagate()  { propagator.propagate(wave); }
 
   /**
    * Remove pattern from cell (i,j).
    */
-  void remove_wave_pattern(unsigned i, unsigned j, unsigned pattern) noexcept {
+  void remove_wave_pattern(unsigned i, unsigned j, unsigned pattern)  {
     if (wave.get(i, j, pattern)) {
       wave.set(i, j, pattern, false);
       propagator.add_to_propagator(i, j, pattern);

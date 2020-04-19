@@ -22,14 +22,14 @@ struct OverlappingWFCOptions {
   /**
    * Get the wave height given these options.
    */
-  unsigned get_wave_height() const noexcept {
+  unsigned get_wave_height() const  {
     return periodic_output ? out_height : out_height - pattern_size + 1;
   }
 
   /**
    * Get the wave width given these options.
    */
-  unsigned get_wave_width() const noexcept {
+  unsigned get_wave_width() const  {
     return periodic_output ? out_width : out_width - pattern_size + 1;
   }
 };
@@ -70,7 +70,7 @@ private:
       const int &seed,
       const std::pair<std::vector<Array2D<T>>, std::vector<double>> &patterns,
       const std::vector<std::array<std::vector<unsigned>, 4>>
-          &propagator) noexcept
+          &propagator) 
       : input(input), options(options), patterns(patterns.first),
         wfc(options.periodic_output, seed, patterns.second, propagator,
             options.get_wave_height(), options.get_wave_width()) {
@@ -87,7 +87,7 @@ private:
   OverlappingWFC(const Array2D<T> &input, const OverlappingWFCOptions &options,
                  const int &seed,
                  const std::pair<std::vector<Array2D<T>>, std::vector<double>>
-                     &patterns) noexcept
+                     &patterns) 
       : OverlappingWFC(input, options, seed, patterns,
                        generate_compatible(patterns.first)) {}
 
@@ -100,7 +100,7 @@ private:
    */
   static void init_ground(WFC &wfc, const Array2D<T> &input,
                           const std::vector<Array2D<T>> &patterns,
-                          const OverlappingWFCOptions &options) noexcept {
+                          const OverlappingWFCOptions &options)  {
     unsigned ground_pattern_id =
         get_ground_pattern_id(input, patterns, options);
 
@@ -130,7 +130,7 @@ private:
   static unsigned
   get_ground_pattern_id(const Array2D<T> &input,
                         const std::vector<Array2D<T>> &patterns,
-                        const OverlappingWFCOptions &options) noexcept {
+                        const OverlappingWFCOptions &options)  {
     // Get the pattern.
     Array2D<T> ground_pattern =
         input.get_sub_array(input.height - 1, input.width / 2,
@@ -153,7 +153,7 @@ private:
    */
   static std::pair<std::vector<Array2D<T>>, std::vector<double>>
   get_patterns(const Array2D<T> &input,
-               const OverlappingWFCOptions &options) noexcept {
+               const OverlappingWFCOptions &options)  {
     std::unordered_map<Array2D<T>, unsigned> patterns_id;
     std::vector<Array2D<T>> patterns;
 
@@ -210,7 +210,7 @@ private:
    * when pattern2 is at a distance (dy,dx) from pattern1.
    */
   static bool agrees(const Array2D<T> &pattern1, const Array2D<T> &pattern2,
-                     int dy, int dx) noexcept {
+                     int dy, int dx)  {
     unsigned xmin = dx < 0 ? 0 : dx;
     unsigned xmax = dx < 0 ? dx + pattern2.width : pattern1.width;
     unsigned ymin = dy < 0 ? 0 : dy;
@@ -235,7 +235,7 @@ private:
    * (see direction.hpp).
    */
   static std::vector<std::array<std::vector<unsigned>, 4>>
-  generate_compatible(const std::vector<Array2D<T>> &patterns) noexcept {
+  generate_compatible(const std::vector<Array2D<T>> &patterns)  {
     std::vector<std::array<std::vector<unsigned>, 4>> compatible =
         std::vector<std::array<std::vector<unsigned>, 4>>(patterns.size());
 
@@ -258,7 +258,7 @@ private:
    * Transform a 2D array containing the patterns id to a 2D array containing
    * the pixels.
    */
-  Array2D<T> to_image(const Array2D<unsigned> &output_patterns) const noexcept {
+  Array2D<T> to_image(const Array2D<unsigned> &output_patterns) const  {
     Array2D<T> output = Array2D<T>(options.out_height, options.out_width);
 
     if (options.periodic_output) {
@@ -306,18 +306,20 @@ public:
    * The constructor used by the user.
    */
   OverlappingWFC(const Array2D<T> &input, const OverlappingWFCOptions &options,
-                 int seed) noexcept
+                 int seed) 
       : OverlappingWFC(input, options, seed, get_patterns(input, options)) {}
 
   /**
    * Run the WFC algorithm, and return the result if the algorithm succeeded.
    */
-  std::optional<Array2D<T>> run() noexcept {
-    std::optional<Array2D<unsigned>> result = wfc.run();
-    if (result.has_value()) {
-      return to_image(*result);
+  Array2D<T> run()  {
+    Array2D<unsigned> result = wfc.run();
+    auto NNN = Array2D<unsigned>{0, 0};
+    if (result != NNN) {
+      return to_image(result);
+    } else {
+        return Array2D<T>{0, 0};
     }
-    return std::nullopt;
   }
 };
 

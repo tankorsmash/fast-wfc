@@ -4,6 +4,8 @@
 #include "assert.h"
 #include <vector>
 
+#include "../../../example/src/include/color.hpp"
+
 /**
  * Represent a 2D array.
  * The 2D array is stored in a single array, to improve cache usage.
@@ -26,21 +28,21 @@ public:
    * Build a 2D array given its height and width.
    * All the array elements are initialized to default value.
    */
-  Array2D(size_t height, size_t width) noexcept
+  Array2D(size_t height, size_t width) 
       : height(height), width(width), data(width * height) {}
 
   /**
    * Build a 2D array given its height and width.
    * All the array elements are initialized to value.
    */
-  Array2D(size_t height, size_t width, T value) noexcept
+  Array2D(size_t height, size_t width, T value) 
       : height(height), width(width), data(width * height, value) {}
 
   /**
    * Return a const reference to the element in the i-th line and j-th column.
    * i must be lower than height and j lower than width.
    */
-  const T &get(size_t i, size_t j) const noexcept {
+  const T &get(size_t i, size_t j) const  {
     assert(i < height && j < width);
     return data[j + i * width];
   }
@@ -49,7 +51,7 @@ public:
    * Return a reference to the element in the i-th line and j-th column.
    * i must be lower than height and j lower than width.
    */
-  T &get(size_t i, size_t j) noexcept {
+  T &get(size_t i, size_t j)  {
     assert(i < height && j < width);
     return data[j + i * width];
   }
@@ -57,7 +59,7 @@ public:
   /**
    * Return the current 2D array reflected along the x axis.
    */
-  Array2D<T> reflected() const noexcept {
+  Array2D<T> reflected() const  {
     Array2D<T> result = Array2D<T>(width, height);
     for (size_t y = 0; y < height; y++) {
       for (size_t x = 0; x < width; x++) {
@@ -70,7 +72,7 @@ public:
   /**
    * Return the current 2D array rotated 90° anticlockwise
    */
-  Array2D<T> rotated() const noexcept {
+  Array2D<T> rotated() const  {
     Array2D<T> result = Array2D<T>(width, height);
     for (size_t y = 0; y < width; y++) {
       for (size_t x = 0; x < height; x++) {
@@ -85,7 +87,7 @@ public:
    * sub_height). The current 2D array is considered toric for this operation.
    */
   Array2D<T> get_sub_array(size_t y, size_t x, size_t sub_width,
-                           size_t sub_height) const noexcept {
+                           size_t sub_height) const  {
     Array2D<T> sub_array_2d = Array2D<T>(sub_width, sub_height);
     for (size_t ki = 0; ki < sub_height; ki++) {
       for (size_t kj = 0; kj < sub_width; kj++) {
@@ -98,7 +100,7 @@ public:
   /**
    * Check if two 2D arrays are equals.
    */
-  bool operator==(const Array2D<T> &a) const noexcept {
+  bool operator==(const Array2D<T> &a) const  {
     if (height != a.height || width != a.width) {
       return false;
     }
@@ -110,15 +112,40 @@ public:
     }
     return true;
   }
+
+  /**
+   * Check if two 2D arrays are not equals.
+   */
+  bool operator!=(const Array2D<T> &a) const  {
+      return !((*this) == a);
+  }
 };
 
+//this Color override shouldn't be neccesary, but if I don't include it, the
+//compiler can't match the original operator== to it. IDK
+///**
+// * Check if two 2D arrays are equals.
+// */
+//bool operator==(const Array2D<Color> &left, const Array2D<Color>& right) {
+//    if (right.height != left.height || right.width != left.width) {
+//        return false;
+//    }
+//
+//    for (size_t i = 0; i < right.data.size(); i++) {
+//        if (left.data[i] != right.data[i]) {
+//            return false;
+//        }
+//    }
+//    return true;
+//}
+//
 /**
  * Hash function.
  */
 namespace std {
 template <typename T> class hash<Array2D<T>> {
 public:
-  size_t operator()(const Array2D<T> &a) const noexcept {
+  size_t operator()(const Array2D<T> &a) const  {
     std::size_t seed = a.data.size();
     for (const T &i : a.data) {
       seed ^= hash<T>()(i) + (size_t)0x9e3779b9 + (seed << 6) + (seed >> 2);

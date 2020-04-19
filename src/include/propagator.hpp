@@ -58,14 +58,14 @@ private:
   /**
    * Initialize compatible.
    */
-  void init_compatible() noexcept;
+  void init_compatible() ;
 
 public:
   /**
    * Constructor building the propagator and initializing compatible.
    */
   Propagator(unsigned wave_height, unsigned wave_width, bool periodic_output,
-             PropagatorState propagator_state) noexcept
+             PropagatorState propagator_state) 
       : patterns_size(propagator_state.size()),
         propagator_state(propagator_state), wave_width(wave_width),
         wave_height(wave_height), periodic_output(periodic_output),
@@ -77,7 +77,7 @@ public:
    * Add an element to the propagator.
    * This function is called when wave.get(y, x, pattern) is set to false.
    */
-  void add_to_propagator(unsigned y, unsigned x, unsigned pattern) noexcept {
+  void add_to_propagator(unsigned y, unsigned x, unsigned pattern)  {
     // All the direction are set to 0, since the pattern cannot be set in (y,x).
     std::array<int, 4> temp = {};
     compatible.get(y, x, pattern) = temp;
@@ -87,7 +87,7 @@ public:
   /**
    * Propagate the information given with add_to_propagator.
    */
-  void propagate(Wave &wave) noexcept;
+  void propagate(Wave &wave) ;
 };
 
 #endif // FAST_WFC_PROPAGATOR_HPP_

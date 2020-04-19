@@ -1,5 +1,7 @@
 #include "wave.hpp"
 
+
+#include <algorithm>
 #include <limits>
 
 namespace {
@@ -8,7 +10,7 @@ namespace {
  * Return distribution * log(distribution).
  */
 std::vector<double>
-get_plogp(const std::vector<double> &distribution) noexcept {
+get_plogp(const std::vector<double> &distribution)  {
   std::vector<double> plogp;
   for (unsigned i = 0; i < distribution.size(); i++) {
     plogp.push_back(distribution[i] * log(distribution[i]));
@@ -19,7 +21,7 @@ get_plogp(const std::vector<double> &distribution) noexcept {
 /**
  * Return min(v) / 2.
  */
-double get_min_abs_half(const std::vector<double> &v) noexcept {
+double get_min_abs_half(const std::vector<double> &v)  {
   double min_abs_half = std::numeric_limits<double>::infinity();
   for (unsigned i = 0; i < v.size(); i++) {
     min_abs_half = std::min(min_abs_half, std::abs(v[i] / 2.0));
@@ -30,7 +32,7 @@ double get_min_abs_half(const std::vector<double> &v) noexcept {
 } // namespace
 
 Wave::Wave(unsigned height, unsigned width,
-     const std::vector<double> &patterns_frequencies) noexcept
+     const std::vector<double> &patterns_frequencies) 
   : patterns_frequencies(patterns_frequencies),
     plogp_patterns_frequencies(get_plogp(patterns_frequencies)),
     min_abs_half_plogp(get_min_abs_half(plogp_patterns_frequencies)),
@@ -55,8 +57,8 @@ Wave::Wave(unsigned height, unsigned width,
 }
 
 
-void Wave::set(unsigned index, unsigned pattern, bool value) noexcept {
-  bool old_value = data.get(index, pattern);
+void Wave::set(unsigned index, unsigned pattern, bool value)  {
+  bool old_value = 1==data.get(index, pattern);
   // If the value isn't changed, nothing needs to be done.
   if (old_value == value) {
     return;
@@ -78,7 +80,7 @@ void Wave::set(unsigned index, unsigned pattern, bool value) noexcept {
 }
 
 
-int Wave::get_min_entropy(std::minstd_rand &gen) const noexcept {
+int Wave::get_min_entropy(std::minstd_rand &gen) const  {
   if (is_impossible) {
     return -2;
   }

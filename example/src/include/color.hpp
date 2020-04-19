@@ -9,11 +9,11 @@
 struct Color {
   unsigned char r, g, b;
 
-  bool operator==(const Color &c) const noexcept {
+  bool operator==(const Color &c) const  {
     return r == c.r && g == c.g && b == c.b;
   }
 
-  bool operator!=(const Color &c) const noexcept { return !(c == *this); }
+  bool operator!=(const Color &c) const  { return !(c == *this); }
 };
 
 /**

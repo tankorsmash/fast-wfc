@@ -5,18 +5,26 @@
 #include <string>
 #include "time.h"
 
-#include "fastwfc/overlapping_wfc.hpp"
-#include "fastwfc/tiling_wfc.hpp"
-#include "fastwfc/utils/array3D.hpp"
-#include "fastwfc/wfc.hpp"
-#include "external/rapidxml.hpp"
-#include "image.hpp"
-#include "rapidxml_utils.hpp"
-#include "utils.hpp"
+#include "overlapping_wfc.hpp"
+#include "tiling_wfc.hpp"
+#include "utils/array3D.hpp"
+#include "wfc.hpp"
+
+#include "../include/external/rapidxml.hpp"
+#include "../include/rapidxml_utils.hpp"
+//#include "rapidxml.hpp"
+//#include "image.hpp"
+//#include "rapidxml_utils.hpp"
+//#include "utils.hpp"
 #include <unordered_set>
 
-using namespace rapidxml;
+#include "../../../src/include/utils/array2D.hpp"
+#include "../include/color.hpp"
+#include "../include/image.hpp"
+#include "../include/utils.hpp"
+
 using namespace std;
+using namespace rapidxml;
 
 /**
  * Get a random seed.
@@ -35,7 +43,7 @@ int get_random_seed() {
 /**
  * Read the overlapping wfc problem from the xml node.
  */
-void read_overlapping_instance(xml_node<> *node) {
+void read_overlapping_instance(rapidxml::xml_node<> *node) {
   string name = rapidxml::get_attribute(node, "name");
   unsigned N = stoi(rapidxml::get_attribute(node, "N"));
   bool periodic_output =
@@ -52,8 +60,9 @@ void read_overlapping_instance(xml_node<> *node) {
   cout << name << " started!" << endl;
   // Stop hardcoding samples
   const std::string image_path = "samples/" + name + ".png";
-  std::optional<Array2D<Color>> m = read_image(image_path);
-  if (!m.has_value()) {
+  Array2D<Color> m = read_image(image_path);
+  Array2D<Color> NNN = Array2D<Color>{0, 0};
+  if (m == NNN) {
     throw "Error while loading " + image_path;
   }
   OverlappingWFCOptions options = {
@@ -61,10 +70,11 @@ void read_overlapping_instance(xml_node<> *node) {
   for (unsigned i = 0; i < screenshots; i++) {
     for (unsigned test = 0; test < 10; test++) {
       int seed = get_random_seed();
-      OverlappingWFC<Color> wfc(*m, options, seed);
-      std::optional<Array2D<Color>> success = wfc.run();
-      if (success.has_value()) {
-        write_image_png("results/" + name + to_string(i) + ".png", *success);
+      OverlappingWFC<Color> wfc(m, options, seed);
+      Array2D<Color> success = wfc.run();
+      Array2D<Color> NULL_COLOR_ARR = Array2D<Color>{0, 0};
+      if (success != NULL_COLOR_ARR) {
+        write_image_png("results/" + name + to_string(i) + ".png", success);
         cout << name << " finished!" << endl;
         break;
       } else {
@@ -102,12 +112,12 @@ Symmetry to_symmetry(const string &symmetry_name) {
 /**
  * Read the names of the tiles in the subset in a tiling WFC problem
  */
-std::optional<unordered_set<string>> read_subset_names(xml_node<> *root_node,
+unordered_set<string> read_subset_names(xml_node<> *root_node,
                                                        const string &subset) {
   unordered_set<string> subset_names;
   xml_node<> *subsets_node = root_node->first_node("subsets");
   if (!subsets_node) {
-    return std::nullopt;
+      return {};
   }
   xml_node<> *subset_node = subsets_node->first_node("subset");
   while (subset_node &&
@@ -115,7 +125,7 @@ std::optional<unordered_set<string>> read_subset_names(xml_node<> *root_node,
     subset_node = subset_node->next_sibling("subset");
   }
   if (!subset_node) {
-    return std::nullopt;
+      return{};
   }
   for (xml_node<> *node = subset_node->first_node("tile"); node;
        node = node->next_sibling("tile")) {
@@ -131,45 +141,45 @@ unordered_map<string, Tile<Color>> read_tiles(xml_node<> *root_node,
                                               const string &current_dir,
                                               const string &subset,
                                               unsigned size) {
-  std::optional<unordered_set<string>> subset_names =
+  unordered_set<string> subset_names =
       read_subset_names(root_node, subset);
   unordered_map<string, Tile<Color>> tiles;
   xml_node<> *tiles_node = root_node->first_node("tiles");
   for (xml_node<> *node = tiles_node->first_node("tile"); node;
        node = node->next_sibling("tile")) {
     string name = rapidxml::get_attribute(node, "name");
-    if (subset_names != nullopt &&
-        subset_names->find(name) == subset_names->end()) {
+    if (subset_names.empty() &&
+        subset_names.find(name) == subset_names.end()) {
       continue;
     }
     Symmetry symmetry =
         to_symmetry(rapidxml::get_attribute(node, "symmetry", "X"));
     double weight = stod(rapidxml::get_attribute(node, "weight", "1.0"));
     const std::string image_path = current_dir + "/" + name + ".png";
-    optional<Array2D<Color>> image = read_image(image_path);
+    Array2D<Color> image = read_image(image_path);
 
-    if (image == nullopt) {
+    if (image == Array2D<Color>{0, 0}) {
       vector<Array2D<Color>> images;
       for (unsigned i = 0; i < nb_of_possible_orientations(symmetry); i++) {
         const std::string image_path =
             current_dir + "/" + name + " " + to_string(i) + ".png";
-        optional<Array2D<Color>> image = read_image(image_path);
-        if (image == nullopt) {
+        Array2D<Color> image = read_image(image_path);
+        if (image == Array2D<Color>{0, 0}) {
           throw "Error while loading " + image_path;
         }
-        if ((image->width != size) || (image->height != size)) {
+        if ((image.width != size) || (image.height != size)) {
           throw "Image " + image_path + " has wrond size";
         }
-        images.push_back(*image);
+        images.push_back(image);
       }
       Tile<Color> tile = {images, symmetry, weight};
       tiles.insert({name, tile});
     } else {
-      if ((image->width != size) || (image->height != size)) {
+      if ((image.width != size) || (image.height != size)) {
         throw "Image " + image_path + " has wrong size";
       }
 
-      Tile<Color> tile(*image, symmetry, weight);
+      Tile<Color> tile(image, symmetry, weight);
       tiles.insert({name, tile});
     }
   }
@@ -204,7 +214,7 @@ read_neighbors(xml_node<> *root_node) {
       right_orientation = stoi(right.substr(right_delimiter, string::npos));
     }
     neighbors.push_back(
-        {left_tile, left_orientation, right_tile, right_orientation});
+        std::make_tuple(left_tile, left_orientation, right_tile, right_orientation));
   }
   return neighbors;
 }
@@ -213,7 +223,7 @@ read_neighbors(xml_node<> *root_node) {
  * Read an instance of a tiling WFC problem.
  */
 void read_simpletiled_instance(xml_node<> *node,
-                               const string &current_dir) noexcept {
+                               const string &current_dir)  {
   string name = rapidxml::get_attribute(node, "name");
   string subset = rapidxml::get_attribute(node, "subset", "tiles");
   bool periodic_output =
@@ -265,9 +275,9 @@ void read_simpletiled_instance(xml_node<> *node,
     int seed = get_random_seed();
     TilingWFC<Color> wfc(tiles, neighbors_ids, height, width, {periodic_output},
                          seed);
-    std::optional<Array2D<Color>> success = wfc.run();
-    if (success.has_value()) {
-      write_image_png("results/" + name + "_" + subset + ".png", *success);
+    Array2D<Color> success = wfc.run();
+    if (success != Array2D<Color>{0, 0}) {
+      write_image_png("results/" + name + "_" + subset + ".png", success);
       cout << name << " finished!" << endl;
       break;
     } else {
@@ -279,7 +289,7 @@ void read_simpletiled_instance(xml_node<> *node,
 /**
  * Read a configuration file containing multiple wfc problems
  */
-void read_config_file(const string &config_path) noexcept {
+void read_config_file(const string &config_path)  {
   ifstream config_file(config_path);
   vector<char> buffer((istreambuf_iterator<char>(config_file)),
                       istreambuf_iterator<char>());
@@ -303,7 +313,7 @@ int main() {
 
   // Initialize rand for non-linux targets
   #ifndef __linux__
-    srand(time(nullptr));
+    srand((int)time(nullptr));
   #endif
 
   std::chrono::time_point<std::chrono::system_clock> start, end;
@@ -313,9 +323,9 @@ int main() {
 
   end = std::chrono::system_clock::now();
   int elapsed_s =
-      std::chrono::duration_cast<std::chrono::seconds>(end - start).count();
+      (int)std::chrono::duration_cast<std::chrono::seconds>(end - start).count();
   int elapsed_ms =
-      std::chrono::duration_cast<std::chrono::milliseconds>(end - start)
+      (int)std::chrono::duration_cast<std::chrono::milliseconds>(end - start)
           .count();
   std::cout << "All samples done in " << elapsed_s << "s, " << elapsed_ms % 1000
             << "ms.\n";

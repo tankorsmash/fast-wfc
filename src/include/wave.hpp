@@ -1,5 +1,7 @@
 #ifndef FAST_WFC_WAVE_HPP_
 #define FAST_WFC_WAVE_HPP_
+#include <cstdint>
+
 
 #include "utils/array2D.hpp"
 #include <random>
@@ -75,31 +77,31 @@ public:
    * Initialize the wave with every cell being able to have every pattern.
    */
   Wave(unsigned height, unsigned width,
-       const std::vector<double> &patterns_frequencies) noexcept;
+       const std::vector<double> &patterns_frequencies) ;
 
   /**
    * Return true if pattern can be placed in cell index.
    */
-  bool get(unsigned index, unsigned pattern) const noexcept {
-    return data.get(index, pattern);
+  bool get(unsigned index, unsigned pattern) const  {
+    return static_cast<bool>(1 == data.get(index, pattern));
   }
 
   /**
    * Return true if pattern can be placed in cell (i,j)
    */
-  bool get(unsigned i, unsigned j, unsigned pattern) const noexcept {
+  bool get(unsigned i, unsigned j, unsigned pattern) const  {
     return get(i * width + j, pattern);
   }
 
   /**
    * Set the value of pattern in cell index.
    */
-  void set(unsigned index, unsigned pattern, bool value) noexcept;
+  void set(unsigned index, unsigned pattern, bool value) ;
 
   /**
    * Set the value of pattern in cell (i,j).
    */
-  void set(unsigned i, unsigned j, unsigned pattern, bool value) noexcept {
+  void set(unsigned i, unsigned j, unsigned pattern, bool value)  {
     set(i * width + j, pattern, value);
   }
 
@@ -108,7 +110,7 @@ public:
    * If there is a contradiction in the wave, return -2.
    * If every cell is decided, return -1.
    */
-  int get_min_entropy(std::minstd_rand &gen) const noexcept;
+  int get_min_entropy(std::minstd_rand &gen) const ;
 
 };
 

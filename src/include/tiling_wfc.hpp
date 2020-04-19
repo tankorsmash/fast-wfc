@@ -45,7 +45,7 @@ template <typename T> struct Tile {
    * id obtained when rotating 90° anticlockwise the tile.
    */
   static std::vector<unsigned>
-  generate_rotation_map(const Symmetry &symmetry) noexcept {
+  generate_rotation_map(const Symmetry &symmetry)  {
     switch (symmetry) {
     case Symmetry::X:
       return {0};
@@ -66,7 +66,7 @@ template <typename T> struct Tile {
    * id obtained when reflecting the tile along the x axis.
    */
   static std::vector<unsigned>
-  generate_reflection_map(const Symmetry &symmetry) noexcept {
+  generate_reflection_map(const Symmetry &symmetry)  {
     switch (symmetry) {
     case Symmetry::X:
       return {0};
@@ -92,7 +92,7 @@ template <typename T> struct Tile {
    * on the x axis.
    */
   static std::vector<std::vector<unsigned>>
-  generate_action_map(const Symmetry &symmetry) noexcept {
+  generate_action_map(const Symmetry &symmetry)  {
     std::vector<unsigned> rotation_map = generate_rotation_map(symmetry);
     std::vector<unsigned> reflection_map = generate_reflection_map(symmetry);
     size_t size = rotation_map.size();
@@ -122,7 +122,7 @@ template <typename T> struct Tile {
    * Generate all distincts rotations of a 2D array given its symmetries;
    */
   static std::vector<Array2D<T>> generate_oriented(Array2D<T> data,
-                                                   Symmetry symmetry) noexcept {
+                                                   Symmetry symmetry)  {
     std::vector<Array2D<T>> oriented;
     oriented.push_back(data);
 
@@ -157,7 +157,7 @@ template <typename T> struct Tile {
    * Create a tile with its differents orientations, its symmetries and its
    * weight on the distribution of tiles.
    */
-  Tile(std::vector<Array2D<T>> data, Symmetry symmetry, double weight) noexcept
+  Tile(std::vector<Array2D<T>> data, Symmetry symmetry, double weight) 
       : data(data), symmetry(symmetry), weight(weight) {}
 
   /*
@@ -165,7 +165,7 @@ template <typename T> struct Tile {
    * weight on the distribution of tiles.
    * The other orientations are generated with its first one.
    */
-  Tile(Array2D<T> data, Symmetry symmetry, double weight) noexcept
+  Tile(Array2D<T> data, Symmetry symmetry, double weight) 
       : data(generate_oriented(data, symmetry)), symmetry(symmetry),
         weight(weight) {}
 };
@@ -212,7 +212,7 @@ private:
    */
   static std::pair<std::vector<std::pair<unsigned, unsigned>>,
                    std::vector<std::vector<unsigned>>>
-  generate_oriented_tile_ids(const std::vector<Tile<T>> &tiles) noexcept {
+  generate_oriented_tile_ids(const std::vector<Tile<T>> &tiles)  {
     std::vector<std::pair<unsigned, unsigned>> id_to_oriented_tile;
     std::vector<std::vector<unsigned>> oriented_tile_ids;
 
@@ -351,12 +351,13 @@ public:
   /**
    * Run the tiling wfc and return the result if the algorithm succeeded
    */
-  std::optional<Array2D<T>> run() {
+  Array2D<T> run() {
     auto a = wfc.run();
-    if (a == std::nullopt) {
-      return std::nullopt;
+    if (a != Array2D<unsigned>{0, 0}) {
+      return id_to_tiling(a);
+    } else {
+        return Array2D<T>{0, 0};
     }
-    return id_to_tiling(*a);
   }
 };
 
