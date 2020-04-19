@@ -6,7 +6,7 @@ example/wfc_demo
 example/results/*
 
 # The library files
-lib/*
+# lib/*
 
 # CMake files
 **/CMakeLists.txt.user
