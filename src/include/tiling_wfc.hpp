@@ -353,7 +353,8 @@ public:
    */
   Array2D<T> run() {
     auto a = wfc.run();
-    if (a != Array2D<unsigned>{0, 0}) {
+    static auto NNN = Array2D<unsigned>{0, 0};
+    if (a != NNN) {
       return id_to_tiling(a);
     } else {
         return Array2D<T>{0, 0};

@@ -314,7 +314,7 @@ public:
    */
   Array2D<T> run()  {
     Array2D<unsigned> result = wfc.run();
-    auto NNN = Array2D<unsigned>{0, 0};
+    static auto NNN = Array2D<unsigned>{0, 0};
     if (result != NNN) {
       return to_image(result);
     } else {
