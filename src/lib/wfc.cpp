@@ -50,9 +50,9 @@ Array2D<unsigned> WFC::run()  {
     ObserveStatus result = observe();
 
     // Check if the algorithm has terminated.
-    if (result == failure) {
+    if (result == ObserveStatus::failure) {
       return Array2D<unsigned>{0, 0};
-    } else if (result == success) {
+    } else if (result == ObserveStatus::success) {
       return wave_to_output();
     }
 
@@ -68,14 +68,14 @@ WFC::ObserveStatus WFC::observe()  {
 
     // If there is a contradiction, the algorithm has failed.
     if (argmin == -2) {
-      return failure;
+      return ObserveStatus::failure;
     }
 
     // If the lowest entropy is 0, then the algorithm has succeeded and
     // finished.
     if (argmin == -1) {
       wave_to_output();
-      return success;
+      return ObserveStatus::success;
     }
 
     // Choose an element according to the pattern distribution
@@ -105,5 +105,5 @@ WFC::ObserveStatus WFC::observe()  {
       }
     }
 
-    return to_continue;
+    return ObserveStatus::to_continue;
   }

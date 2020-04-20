@@ -43,7 +43,7 @@ private:
    * contradiction). This function should be used only when all cell of the wave
    * are defined.
    */
-  Array2D<unsigned> wave_to_output() const ;
+  Array2D<unsigned> wave_to_output() const;
 
 public:
   /**
@@ -51,19 +51,17 @@ public:
    */
   WFC(bool periodic_output, int seed, std::vector<double> patterns_frequencies,
       Propagator::PropagatorState propagator, unsigned wave_height,
-      unsigned wave_width)
-    ;
+      unsigned wave_width);
 
   /**
    * Run the algorithm, and return a result if it succeeded.
    */
-  //std::optional<Array2D<unsigned>> run() ;
-  Array2D<unsigned> run() ;
+  Array2D<unsigned> run();
 
   /**
    * Return value of observe.
    */
-  enum ObserveStatus {
+  enum class ObserveStatus {
     success,    // WFC has finished and has succeeded.
     failure,    // WFC has finished and failed.
     to_continue // WFC isn't finished.
@@ -72,7 +70,7 @@ public:
   /**
    * Define the value of the cell with lowest entropy.
    */
-  ObserveStatus observe() ;
+  ObserveStatus observe();
 
   /**
    * Propagate the information of the wave.
