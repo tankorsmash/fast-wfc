@@ -55,8 +55,9 @@ void read_overlapping_instance(rapidxml::xml_node<> *node) {
         stoi(rapidxml::get_attribute(node, "screenshots", "2"));
     unsigned width = stoi(rapidxml::get_attribute(node, "width", "48"));
     unsigned height = stoi(rapidxml::get_attribute(node, "height", "48"));
+    std::string alias = rapidxml::get_attribute(node, "alias", "");
 
-    std::cout << name << " started!" << std::endl;
+    std::cout << name << "_" << alias << " started!" << std::endl;
     // Stop hardcoding samples
     const std::string image_path = "samples/" + name + ".png";
     Array2D<Color> m = read_image(image_path);
@@ -76,11 +77,11 @@ void read_overlapping_instance(rapidxml::xml_node<> *node) {
             static Array2D<Color> NULL_COLOR_ARR = Array2D<Color>{0, 0};
 
             if (success != NULL_COLOR_ARR) {
-                write_image_png("results/" + name + std::to_string(screenshot_idx) + ".png", success);
+                write_image_png("results/" + name + "_" + alias + std::to_string(screenshot_idx) + ".png", success);
                 std::cout << name << " finished!" << std::endl;
                 break;
             } else {
-                std::cout << "ERROR: '" << name << "' failed!" << " x" << test_idx << std::endl;
+                std::cout << "ERROR: '" << name << "_" << alias << "' failed!" << " x" << test_idx << std::endl;
             }
         }
     }
