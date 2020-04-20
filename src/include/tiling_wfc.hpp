@@ -372,13 +372,19 @@ std::vector<double> TilingWFC<T>::get_tiles_weights(const std::vector<Tile<T>>& 
 template <typename T>
 Array2D<T> TilingWFC<T>::id_to_tiling(Array2D<unsigned> ids)
 {
+    //TODO figure out why tiles are not set some of the time. maybe a missing config?
     assert(tiles.size() > 0 && "tiles must be set");
+
     unsigned size = tiles[0].data[0].height;
     Array2D<T> tiling(size * ids.height, size * ids.width);
     for (unsigned i = 0; i < ids.height; i++) {
         for (unsigned j = 0; j < ids.width; j++) {
             std::pair<unsigned, unsigned> oriented_tile = id_to_oriented_tile[ids.get(i, j)];
-            for (unsigned y = 0; y < size; y++) { for (unsigned x = 0; x < size; x++) { tiling.get(i * size + y, j * size + x) = tiles[oriented_tile.first].data[oriented_tile.second].get(y, x); } }
+            for (unsigned y = 0; y < size; y++) {
+                for (unsigned x = 0; x < size; x++) {
+                    tiling.get(i * size + y, j * size + x) = tiles[oriented_tile.first].data[oriented_tile.second].get(y, x);
+                }
+            }
         }
     }
     return tiling;
