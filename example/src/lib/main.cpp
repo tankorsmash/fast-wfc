@@ -147,8 +147,10 @@ std::unordered_map<std::string, Tile<Color>> read_tiles(
     std::unordered_set<std::string> subset_names = read_subset_names(root_node, subset);
     std::unordered_map<std::string, Tile<Color>> tiles;
     xml_node<> *tiles_node = root_node->first_node("tiles");
-    for (xml_node<> *node = tiles_node->first_node("tile"); node;
-        node = node->next_sibling("tile")) {
+    for (xml_node<> *node = tiles_node->first_node("tile");
+        node; node = node->next_sibling("tile")
+    )
+    {
         std::string name = rapidxml::get_attribute(node, "name");
         if (subset_names.empty() &&
             subset_names.find(name) == subset_names.end()) {
