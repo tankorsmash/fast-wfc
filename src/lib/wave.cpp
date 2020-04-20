@@ -63,6 +63,7 @@ void Wave::set(unsigned index, unsigned pattern, bool value)  {
     if (old_value == value) {
         return;
     }
+
     // Otherwise, the memoisation should be updated.
     data.get(index, pattern) = value;
     memoisation.plogp_sum[index] -= plogp_patterns_frequencies[pattern];
@@ -70,6 +71,7 @@ void Wave::set(unsigned index, unsigned pattern, bool value)  {
     memoisation.log_sum[index] = log(memoisation.sum[index]);
     memoisation.nb_patterns[index]--;
     memoisation.entropy[index] = memoisation.log_sum[index] - memoisation.plogp_sum[index] / memoisation.sum[index];
+
     // If there is no patterns possible in the cell, then there is a
     // contradiction.
     if (memoisation.nb_patterns[index] == 0) {
