@@ -114,8 +114,9 @@ Symmetry to_symmetry(const std::string &symmetry_name) {
 /**
  * Read the names of the tiles in the subset in a tiling WFC problem
  */
-std::unordered_set<std::string> read_subset_names(xml_node<> *root_node,
-    const std::string &subset) {
+std::unordered_set<std::string> read_subset_names(
+    xml_node<> *root_node, const std::string &subset )
+{
     std::unordered_set<std::string> subset_names;
     xml_node<> *subsets_node = root_node->first_node("subsets");
     if (!subsets_node) {
@@ -224,8 +225,8 @@ read_neighbors(xml_node<> *root_node) {
 /**
  * Read an instance of a tiling WFC problem.
  */
-void read_simpletiled_instance(xml_node<> *node,
-    const std::string &current_dir)  {
+void read_simpletiled_instance(xml_node<> *node, const std::string &current_dir)
+{
     std::string name = rapidxml::get_attribute(node, "name");
     std::string subset = rapidxml::get_attribute(node, "subset", "tiles");
     bool periodic_output =
@@ -244,8 +245,7 @@ void read_simpletiled_instance(xml_node<> *node,
     xml_node<> *data_root_node = data_document.first_node("set");
     unsigned size = stoi(rapidxml::get_attribute(data_root_node, "size"));
 
-    std::unordered_map<std::string, Tile<Color>> tiles_map =
-        read_tiles(data_root_node, current_dir + "/" + name, subset, size);
+    std::unordered_map<std::string, Tile<Color>> tiles_map = read_tiles(data_root_node, current_dir + "/" + name, subset, size);
     std::unordered_map<std::string, unsigned> tiles_id;
     std::vector<Tile<Color>> tiles;
     unsigned id = 0;
