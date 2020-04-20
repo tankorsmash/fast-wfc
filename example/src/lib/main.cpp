@@ -141,10 +141,8 @@ std::unordered_set<std::string> read_subset_names(
  * Read all tiles for a tiling problem
  */
 std::unordered_map<std::string, Tile<Color>> read_tiles(
-    xml_node<> *root_node,
-    const std::string &current_dir,
-    const std::string &subset,
-    unsigned size)
+    xml_node<> *root_node, const std::string &current_dir,
+    const std::string &subset, unsigned size )
 {
     std::unordered_set<std::string> subset_names = read_subset_names(root_node, subset);
     std::unordered_map<std::string, Tile<Color>> tiles;
