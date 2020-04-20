@@ -68,19 +68,19 @@ void read_overlapping_instance(rapidxml::xml_node<> *node) {
     OverlappingWFCOptions options = {
         periodic_input, periodic_output, height, width, symmetry, ground, N
     };
-    for (unsigned i = 0; i < screenshots; i++) {
-        for (unsigned test = 0; test < 10; test++) {
+    for (unsigned screenshot_idx = 0; screenshot_idx < screenshots; screenshot_idx++) {
+        for (unsigned test_idx = 0; test_idx < 10; test_idx++) {
             int seed = get_random_seed();
             OverlappingWFC<Color> wfc(m, options, seed);
             Array2D<Color> success = wfc.run();
             static Array2D<Color> NULL_COLOR_ARR = Array2D<Color>{0, 0};
 
             if (success != NULL_COLOR_ARR) {
-                write_image_png("results/" + name + std::to_string(i) + ".png", success);
+                write_image_png("results/" + name + std::to_string(screenshot_idx) + ".png", success);
                 std::cout << name << " finished!" << std::endl;
                 break;
             } else {
-                std::cout << "ERROR: '" << name << "' failed!" << std::endl;
+                std::cout << "ERROR: '" << name << "' failed!" << " x" << test_idx << std::endl;
             }
         }
     }
