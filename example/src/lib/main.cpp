@@ -255,6 +255,7 @@ void read_simpletiled_instance(xml_node<> *node, const std::string &current_dir)
         id++;
     }
 
+    assert(tiles.size() > 0);
     std::vector<std::tuple<std::string, unsigned, std::string, unsigned>> neighbors =
         read_neighbors(data_root_node);
     std::vector<std::tuple<unsigned, unsigned, unsigned, unsigned>> neighbors_ids;
