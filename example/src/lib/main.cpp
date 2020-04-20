@@ -120,7 +120,7 @@ std::unordered_set<std::string> read_subset_names(
     std::unordered_set<std::string> subset_names;
     xml_node<> *subsets_node = root_node->first_node("subsets");
     if (!subsets_node) {
-        return{};
+        return {}; //replaces std::nullopt
     }
     xml_node<> *subset_node = subsets_node->first_node("subset");
     while (subset_node &&
@@ -128,7 +128,7 @@ std::unordered_set<std::string> read_subset_names(
         subset_node = subset_node->next_sibling("subset");
     }
     if (!subset_node) {
-        return{};
+        return {}; //replaces std::nullopt
     }
     for (xml_node<> *node = subset_node->first_node("tile"); node;
         node = node->next_sibling("tile")) {
@@ -152,7 +152,7 @@ std::unordered_map<std::string, Tile<Color>> read_tiles(
     )
     {
         std::string name = rapidxml::get_attribute(node, "name");
-        if (subset_names.empty() &&
+        if ((!subset_names.empty()) &&
             subset_names.find(name) == subset_names.end()) {
             continue;
         }
