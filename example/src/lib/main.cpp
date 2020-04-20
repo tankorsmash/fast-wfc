@@ -139,12 +139,13 @@ std::unordered_set<std::string> read_subset_names(xml_node<> *root_node,
 /**
  * Read all tiles for a tiling problem
  */
-std::unordered_map<std::string, Tile<Color>> read_tiles(xml_node<> *root_node,
+std::unordered_map<std::string, Tile<Color>> read_tiles(
+    xml_node<> *root_node,
     const std::string &current_dir,
     const std::string &subset,
-    unsigned size) {
-    std::unordered_set<std::string> subset_names =
-        read_subset_names(root_node, subset);
+    unsigned size)
+{
+    std::unordered_set<std::string> subset_names = read_subset_names(root_node, subset);
     std::unordered_map<std::string, Tile<Color>> tiles;
     xml_node<> *tiles_node = root_node->first_node("tiles");
     for (xml_node<> *node = tiles_node->first_node("tile"); node;
@@ -154,8 +155,7 @@ std::unordered_map<std::string, Tile<Color>> read_tiles(xml_node<> *root_node,
             subset_names.find(name) == subset_names.end()) {
             continue;
         }
-        Symmetry symmetry =
-            to_symmetry(rapidxml::get_attribute(node, "symmetry", "X"));
+        Symmetry symmetry = to_symmetry(rapidxml::get_attribute(node, "symmetry", "X"));
         double weight = stod(rapidxml::get_attribute(node, "weight", "1.0"));
         const std::string image_path = current_dir + "/" + name + ".png";
         Array2D<Color> image = read_image(image_path);
@@ -164,8 +164,7 @@ std::unordered_map<std::string, Tile<Color>> read_tiles(xml_node<> *root_node,
         if (image == NNN) {
             std::vector<Array2D<Color>> images;
             for (unsigned i = 0; i < nb_of_possible_orientations(symmetry); i++) {
-                const std::string image_path =
-                    current_dir + "/" + name + " " + std::to_string(i) + ".png";
+                const std::string image_path = current_dir + "/" + name + " " + std::to_string(i) + ".png";
                 Array2D<Color> image = read_image(image_path);
                 if (image == NNN) {
                     throw "Error while loading " + image_path;
@@ -177,8 +176,7 @@ std::unordered_map<std::string, Tile<Color>> read_tiles(xml_node<> *root_node,
             }
             Tile<Color> tile = {images, symmetry, weight};
             tiles.insert({name, tile});
-        }
-        else {
+        } else {
             if ((image.width != size) || (image.height != size)) {
                 throw "Image " + image_path + " has wrong size";
             }
@@ -275,10 +273,12 @@ void read_simpletiled_instance(xml_node<> *node,
                                                 tiles_id[neighbor2], orientation2));
     }
 
+    assert(tiles.size() > 0);
     for (unsigned test = 0; test < 10; test++) {
         int seed = get_random_seed();
-        TilingWFC<Color> wfc(tiles, neighbors_ids, height, width, {periodic_output},
-            seed);
+        TilingWFC<Color> wfc(
+            tiles, neighbors_ids, height, width, {periodic_output}, seed
+        );
         Array2D<Color> success = wfc.run();
 
         static auto NNN = Array2D<Color>{0, 0};
